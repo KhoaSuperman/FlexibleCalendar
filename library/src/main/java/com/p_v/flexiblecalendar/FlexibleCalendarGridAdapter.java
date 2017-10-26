@@ -1,11 +1,11 @@
 package com.p_v.flexiblecalendar;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.MonthDisplayHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author p-v
  */
-class FlexibleCalendarGridAdapter extends BaseAdapter {
+class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarGridAdapter.CellHolder> {
 
     private static final int SIX_WEEK_DAY_COUNT = 42;
     private int year;
@@ -41,6 +41,7 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
                                        boolean showDatesOutsideMonth, boolean decorateDatesOutsideMonth, int startDayOfTheWeek,
                                        boolean disableAutoDateSelection) {
         this.context = context;
+        setHasStableIds(true);
         this.showDatesOutsideMonth = showDatesOutsideMonth;
         this.decorateDatesOutsideMonth = decorateDatesOutsideMonth;
         this.disableAutoDateSelection = disableAutoDateSelection;
@@ -55,35 +56,21 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        int weekStartDay = monthDisplayHelper.getWeekStartDay();
-        int firstDayOfWeek = monthDisplayHelper.getFirstDayOfMonth();
-        int diff = firstDayOfWeek - weekStartDay;
-        int toAdd = diff < 0 ? (diff + 7) : diff;
-        return showDatesOutsideMonth ? SIX_WEEK_DAY_COUNT
-                : monthDisplayHelper.getNumberOfDaysInMonth()
-                + toAdd;
+    public CellHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
+        BaseCellView cellView = cellViewDrawer.getCellView(0, null, null, viewType);
+        if (cellView == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            cellView = (BaseCellView) inflater.inflate(R.layout.square_cell_layout, null);
+        }
+        return new CellHolder(cellView);
     }
 
     @Override
-    public Object getItem(int position) {
-        //TODO implement
-        int row = position / 7;
-        int col = position % 7;
-        return monthDisplayHelper.getDayAt(row, col);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public int getItemViewType(int position) {
         int row = position / 7;
         int col = position % 7;
 
-        //checking if is within current month
         boolean isWithinCurrentMonth = monthDisplayHelper.isWithinCurrentMonth(row, col);
 
         //compute cell type
@@ -121,16 +108,16 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
             }
         }
 
-        BaseCellView cellView = cellViewDrawer.getCellView(position, convertView, parent, cellType);
-        if (cellView == null) {
-            cellView = (BaseCellView) convertView;
-            if (cellView == null) {
-                LayoutInflater inflater = LayoutInflater.from(context);
-                cellView = (BaseCellView) inflater.inflate(R.layout.square_cell_layout, null);
-            }
-        }
-        drawDateCell(cellView, day, cellType);
-        return cellView;
+        return cellType;
+    }
+
+    @Override
+    public void onBindViewHolder(CellHolder holder, int position) {
+        int row = position / 7;
+        int col = position % 7;
+        int day = monthDisplayHelper.getDayAt(row, col);
+
+        drawDateCell(holder.baseCellView, day, getItemViewType(position));
     }
 
     private void drawDateCell(BaseCellView cellView, int day, int cellType) {
@@ -181,6 +168,24 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
             }
         }
         cellView.refreshDrawableState();
+    }
+
+    @Override
+    public int getItemCount() {
+        int weekStartDay = monthDisplayHelper.getWeekStartDay();
+        int firstDayOfWeek = monthDisplayHelper.getFirstDayOfMonth();
+        int diff = firstDayOfWeek - weekStartDay;
+        int toAdd = diff < 0 ? (diff + 7) : diff;
+        return showDatesOutsideMonth ? SIX_WEEK_DAY_COUNT
+                : monthDisplayHelper.getNumberOfDaysInMonth()
+                + toAdd;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        int row = position / 7;
+        int col = position % 7;
+        return ((monthDisplayHelper.getDayAt(row, col)) + "" +position).hashCode();
     }
 
     public int getYear() {
@@ -277,7 +282,16 @@ class FlexibleCalendarGridAdapter extends BaseAdapter {
             if (onDateCellItemClickListener != null) {
                 onDateCellItemClickListener.onDateClick(selectedItem);
             }
+        }
+    }
 
+    public static class CellHolder extends RecyclerView.ViewHolder {
+
+        BaseCellView baseCellView;
+
+        public CellHolder(BaseCellView itemView) {
+            super(itemView);
+            this.baseCellView = itemView;
         }
     }
 

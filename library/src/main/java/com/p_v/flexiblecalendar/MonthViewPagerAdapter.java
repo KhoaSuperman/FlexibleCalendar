@@ -3,10 +3,12 @@ package com.p_v.flexiblecalendar;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
@@ -37,6 +39,8 @@ public class MonthViewPagerAdapter extends PagerAdapter {
     private int startDayOfTheWeek;
     private boolean decorateDatesOutsideMonth;
     private boolean disableAutoDateSelection;
+
+    public int width;
 
     public MonthViewPagerAdapter(Context context, int year, int month,
                                  FlexibleCalendarGridAdapter.OnDateCellItemClickListener onDateCellItemClickListener,
@@ -128,11 +132,12 @@ public class MonthViewPagerAdapter extends PagerAdapter {
         adapter.setMonthEventFetcher(monthEventFetcher);
         adapter.setCellViewDrawer(cellViewDrawer);
 
-        GridView view = (GridView) inflater.inflate(R.layout.month_grid_layout, null);
+        RecyclerView view = (RecyclerView) inflater.inflate(R.layout.month_grid_layout, null);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(container.getContext(), 7, LinearLayoutManager.VERTICAL, false);
+        view.setLayoutManager(gridLayoutManager);
+
         view.setTag(GRID_TAG_PREFIX + position);
         view.setAdapter(adapter);
-        view.setVerticalSpacing(gridViewVerticalSpacing);
-        view.setHorizontalSpacing(gridViewHorizontalSpacing);
 
         layout.addView(view);
         container.addView(layout);
@@ -214,7 +219,6 @@ public class MonthViewPagerAdapter extends PagerAdapter {
 
     }
 
-
     protected class MonthViewPagerDataSetObserver extends DataSetObserver {
         @Override
         public void onChanged() {
@@ -226,7 +230,7 @@ public class MonthViewPagerAdapter extends PagerAdapter {
         @Override
         public void onInvalidated() {
             for (FlexibleCalendarGridAdapter adapter : dateAdapters) {
-                adapter.notifyDataSetInvalidated();
+                adapter.notifyDataSetChanged();
             }
         }
     }

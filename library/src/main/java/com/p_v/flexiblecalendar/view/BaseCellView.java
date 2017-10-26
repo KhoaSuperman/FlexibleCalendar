@@ -2,6 +2,7 @@ package com.p_v.flexiblecalendar.view;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 /**
  * @author p-v
  */
-public abstract class BaseCellView extends TextView {
+public abstract class BaseCellView extends AppCompatTextView {
 
     public static final int TODAY = 0;
     public static final int SELECTED = 1;

@@ -65,7 +65,7 @@ public class CalendarActivity5 extends AppCompatActivity {
 
         @Override
         public int getColor() {
-            return 0;
+            return R.color.material_grey_900;
         }
     }
 }

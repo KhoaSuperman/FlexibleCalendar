@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
 import com.p_v.flexiblecalendar.entity.Event;
@@ -138,6 +138,7 @@ public class FlexibleCalendarView extends LinearLayout implements
         monthViewPager.setNumOfRows(showDatesOutsideMonth ? 6 : FlexibleCalendarHelper.getNumOfRowsForTheMonth(displayYear, displayMonth, startDayOfTheWeek));
         monthViewPagerAdapter = new MonthViewPagerAdapter(context, displayYear, displayMonth, this,
                 showDatesOutsideMonth, decorateDatesOutsideMonth, startDayOfTheWeek, disableAutoDateSelection);
+
         monthViewPagerAdapter.setMonthEventFetcher(this);
         monthViewPagerAdapter.setSpacing(monthDayHorizontalSpacing, monthDayVerticalSpacing);
 
@@ -316,8 +317,9 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     private void reAddAdapter(View view) {
         if (view != null) {
-            ListAdapter adapter = ((GridView) view).getAdapter();
-            ((GridView) view).setAdapter(adapter);
+            RecyclerView.Adapter adapter = ((RecyclerView) view).getAdapter();
+//            ((RecyclerView) view).setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
 
