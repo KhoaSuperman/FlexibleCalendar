@@ -2,7 +2,7 @@ package com.p_v.flexiblecalendarexample;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalendarListActivity extends ActionBarActivity implements CalendarListAdapter.OnCalendarTypeClickListener {
+public class CalendarListActivity extends AppCompatActivity implements CalendarListAdapter.OnCalendarTypeClickListener {
 
     private List<String> calendarList;
 

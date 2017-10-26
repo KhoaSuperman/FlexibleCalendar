@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.p_v.flexiblecalendar.FlexibleCalendarView;
 import com.p_v.flexiblecalendar.entity.CalendarEvent;
+import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.BaseCellView;
 import com.p_v.flexiblecalendar.view.SquareCellView;
 
@@ -138,9 +140,12 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
             public List<CalendarEvent> getEventsForTheDay(int year, int month, int day) {
 
                 if (year == calendar.get(Calendar.YEAR) && month == calendar.get(Calendar.MONTH) && day == calendar.get(Calendar.DAY_OF_MONTH)) {
-                    List<CalendarEvent> eventColors = new ArrayList<>(2);
+                    List<CalendarEvent> eventColors = new ArrayList<>(5);
                     eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
                     eventColors.add(new CalendarEvent(android.R.color.holo_purple));
+                    eventColors.add(new CalendarEvent(android.R.color.holo_green_dark));
+                    eventColors.add(new CalendarEvent(android.R.color.holo_orange_dark));
+                    eventColors.add(new CalendarEvent(android.R.color.holo_red_dark));
                     return eventColors;
                 }
 
@@ -235,6 +240,17 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     public void onDateClick(int year, int month, int day) {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
+
+        List<? extends Event> events = calendarView.getEventsForTheDay(year, month, day);
+        if (events != null) {
+            for (Event event : events) {
+                CalendarEvent calendarEvent = (CalendarEvent) event;
+                Log.d("Event", calendarEvent.getColor() + "");
+            }
+
+            Log.d("Event", "----");
+        }
+
         Toast.makeText(getActivity(), cal.getTime().toString() + " Clicked", Toast.LENGTH_SHORT).show();
     }
 }
