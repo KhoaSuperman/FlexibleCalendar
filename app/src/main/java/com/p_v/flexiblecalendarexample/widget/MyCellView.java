@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendarexample.MyEvent;
 import com.p_v.flexiblecalendar.view.CircularEventCellView;
+import com.p_v.flexiblecalendarexample.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +46,19 @@ public class MyCellView extends CircularEventCellView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (myEvents.size() > 0) {
-            for (MyEvent myEvent : myEvents) {
-                setBackground(getContext().getResources().getDrawable(myEvent.getBgColor()));
-                setTextColor(getContext().getResources().getColor(android.R.color.white));
-            }
+        if (getStateSet().contains(STATE_SELECTED)) {
+            setBackground(getContext().getResources().getDrawable(R.drawable.inset_cell_selected));
+            setTextColor(getContext().getResources().getColor(android.R.color.white));
         } else {
-            setBackground(dfBackground);
-            setTextColor(dfTextColor);
+            if (myEvents.size() > 0) {
+                for (MyEvent myEvent : myEvents) {
+                    setBackground(getContext().getResources().getDrawable(myEvent.getBgColor()));
+                    setTextColor(getContext().getResources().getColor(android.R.color.white));
+                }
+            } else {
+                setBackground(dfBackground);
+                setTextColor(dfTextColor);
+            }
         }
     }
 
