@@ -18,9 +18,7 @@
         android:id="@+id/calendar_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:paddingBottom="22dp"
-        support:startDayOfTheWeek="WEDNESDAY" />
+        android:background="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"

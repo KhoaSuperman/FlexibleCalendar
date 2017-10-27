@@ -10,15 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.p_v.flexiblecalendar.FlexibleCalendarView;
-import com.p_v.flexiblecalendar.entity.CalendarEvent;
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.BaseCellView;
 import com.p_v.flexiblecalendar.view.SquareCellView;
+import com.p_v.flexiblecalendarexample.widget.MyCellView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,18 +41,29 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        calendarView = (FlexibleCalendarView) view.findViewById(R.id.calendar_view);
+        calendarView = view.findViewById(R.id.calendar_view);
+        calendarView.setShowDatesOutsideMonth(true);
         calendarView.setCalendarView(new FlexibleCalendarView.CalendarView() {
             @Override
             public BaseCellView getCellView(int position, View convertView, ViewGroup parent, @BaseCellView.CellType int cellType) {
-                BaseCellView cellView = (BaseCellView) convertView;
-                if (cellView == null) {
-                    LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    cellView = (BaseCellView) inflater.inflate(R.layout.calendar1_date_cell_view, null);
+                MyCellView cellView;
+                int layout;
+                switch (cellType) {
+                    case BaseCellView.OUTSIDE_MONTH:
+                        layout = R.layout.item_cell_day_outside;
+                        break;
+                    case BaseCellView.SELECTED:
+                        layout = R.layout.item_cell_selected;
+                        break;
+                    case BaseCellView.TODAY:
+                        layout = R.layout.item_cell_today;
+                        break;
+                    default:
+                        layout = R.layout.item_cell_normal;
+                        break;
                 }
-                if (cellType == BaseCellView.OUTSIDE_MONTH) {
-                    cellView.setTextColor(getResources().getColor(R.color.date_outside_month_text_color_activity_1));
-                }
+                LayoutInflater inflater = LayoutInflater.from(getActivity());
+                cellView = (MyCellView) inflater.inflate(layout, null);
                 return cellView;
             }
 
@@ -62,7 +72,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
                 BaseCellView cellView = (BaseCellView) convertView;
                 if (cellView == null) {
                     LayoutInflater inflater = LayoutInflater.from(getActivity());
-                    cellView = (SquareCellView) inflater.inflate(R.layout.calendar1_week_cell_view, null);
+                    cellView = (SquareCellView) inflater.inflate(com.p_v.fliexiblecalendar.R.layout.square_cell_layout, null);
                 }
                 return cellView;
             }
@@ -77,58 +87,6 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
 
         fillEvents();
 
-        Button nextDateBtn = (Button) view.findViewById(R.id.move_to_next_date);
-        Button prevDateBtn = (Button) view.findViewById(R.id.move_to_previous_date);
-        Button nextMonthBtn = (Button) view.findViewById(R.id.move_to_next_month);
-        Button prevMonthBtn = (Button) view.findViewById(R.id.move_to_previous_month);
-        Button goToCurrentDayBtn = (Button) view.findViewById(R.id.go_to_current_day);
-        Button showDatesOutSideMonthBtn = (Button) view.findViewById(R.id.show_dates_outside_month);
-
-        nextDateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.moveToNextDate();
-            }
-        });
-        prevDateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.moveToPreviousDate();
-            }
-        });
-        nextMonthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.moveToNextMonth();
-            }
-        });
-        prevMonthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.moveToPreviousMonth();
-            }
-        });
-        goToCurrentDayBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendarView.goToCurrentDay();
-            }
-        });
-
-        showDatesOutSideMonthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (calendarView.getShowDatesOutsideMonth()) {
-                    calendarView.setShowDatesOutsideMonth(false);
-                    ((Button) v).setText("Show dates outside month");
-                } else {
-                    ((Button) v).setText("Hide dates outside month");
-                    calendarView.setShowDatesOutsideMonth(true);
-                }
-
-            }
-        });
-
         setupToolBar(view);
 
         return view;
@@ -137,43 +95,35 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     private void fillEvents() {
         calendarView.setEventDataProvider(new FlexibleCalendarView.EventDataProvider() {
             @Override
-            public List<CalendarEvent> getEventsForTheDay(int year, int month, int day) {
+            public List<MyEvent> getEventsForTheDay(int year, int month, int day) {
 
                 if (year == calendar.get(Calendar.YEAR) && month == calendar.get(Calendar.MONTH) && day == calendar.get(Calendar.DAY_OF_MONTH)) {
-                    List<CalendarEvent> eventColors = new ArrayList<>(5);
-                    eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_purple));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_green_dark));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_orange_dark));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_red_dark));
+                    List<MyEvent> eventColors = new ArrayList<>(5);
+                    eventColors.add(new MyEvent(android.R.color.holo_blue_light, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_purple, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_green_dark, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_orange_dark, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_red_dark, day, month, year));
                     return eventColors;
                 }
 
-                if (month == calendar.get(Calendar.MONTH) && day == 1) {
-                    List<CalendarEvent> eventColors = new ArrayList<>(2);
-                    eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_purple));
+                if (day == 10) {
+                    List<MyEvent> eventColors = new ArrayList<>(5);
+                    eventColors.add(new MyEvent(android.R.color.holo_green_dark, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_orange_dark, day, month, year));
+                    eventColors.add(new MyEvent(android.R.color.holo_red_dark, day, month, year));
+
+                    MyEvent dayOff = new MyEvent(0, day, month, year);
+                    dayOff.setBgColor(R.drawable.inset_cell_shift);
+                    eventColors.add(dayOff);
                     return eventColors;
                 }
 
-                if (month == calendar.get(Calendar.MONTH) && day == 7 ||
-                        month == calendar.get(Calendar.MONTH) && day == 29 ||
-                        month == calendar.get(Calendar.MONTH) && day == 5 ||
-                        month == calendar.get(Calendar.MONTH) && day == 9) {
-                    List<CalendarEvent> eventColors = new ArrayList<>(1);
-                    eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_green_dark));
-                    return eventColors;
-                }
-
-                if (year == 2016 && month == 10 && day == 31 ||
-                        year == 2016 && month == 10 && day == 22 ||
-                        year == 2016 && month == 10 && day == 18 ||
-                        year == 2016 && month == 10 && day == 11) {
-                    List<CalendarEvent> eventColors = new ArrayList<>(3);
-                    eventColors.add(new CalendarEvent(android.R.color.holo_red_dark));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_orange_light));
-                    eventColors.add(new CalendarEvent(android.R.color.holo_purple));
+                if (day == 15 || day == 25) {
+                    List<MyEvent> eventColors = new ArrayList<>(5);
+                    MyEvent dayOff = new MyEvent(0, day, month, year);
+                    dayOff.setBgColor(R.drawable.inset_cell_off);
+                    eventColors.add(dayOff);
                     return eventColors;
                 }
 
@@ -245,7 +195,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
         List<? extends Event> events = calendarView.getEventsForTheDay(year, month, day);
         if (events != null) {
             for (Event event : events) {
-                CalendarEvent calendarEvent = (CalendarEvent) event;
+                MyEvent calendarEvent = (MyEvent) event;
                 Log.d("Event", calendarEvent.getColor() + "");
             }
 

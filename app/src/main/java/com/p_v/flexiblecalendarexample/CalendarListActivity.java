@@ -34,6 +34,9 @@ public class CalendarListActivity extends AppCompatActivity implements CalendarL
         CalendarListAdapter adatper = new CalendarListAdapter(calendarList);
         adatper.setCalendarTypeClickListener(this);
         calendarRecyclerView.setAdapter(adatper);
+
+        Intent calActivity1 = new Intent(this, CalendarActivity.class);
+        startActivity(calActivity1);
     }
 
     @Override

@@ -99,17 +99,13 @@ public class CircularEventCellView extends BaseCellView {
         Set<Integer> stateSet = getStateSet();
 
         // draw only if there is no state or just one state i.e. the regular day state
-        if ((stateSet == null || stateSet.isEmpty() || (stateSet.size() == 1
-                && stateSet.contains(STATE_REGULAR))) && paintList != null) {
-            if (paintList != null) {
-                int num = paintList.size();
-                for (int i = 0; i < num; i++) {
-                    canvas.drawCircle(calculateStartPoint(i), eventCircleY, radius, paintList.get(i));
-                }
+        if ((stateSet == null || stateSet.isEmpty() || (stateSet.size() == 1))
+                && paintList != null) {
+            int num = paintList.size();
+            for (int i = 0; i < num; i++) {
+                canvas.drawCircle(calculateStartPoint(i), eventCircleY, radius, paintList.get(i));
             }
         }
-
-
     }
 
     private int calculateStartPoint(int offset) {
@@ -121,10 +117,12 @@ public class CircularEventCellView extends BaseCellView {
         if (colorList != null) {
             paintList = new ArrayList<>(colorList.size());
             for (Event e : colorList) {
-                Paint eventPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                eventPaint.setStyle(Paint.Style.FILL);
-                eventPaint.setColor(getContext().getResources().getColor(e.getColor()));
-                paintList.add(eventPaint);
+                if (e.getColor() != 0) {
+                    Paint eventPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    eventPaint.setStyle(Paint.Style.FILL);
+                    eventPaint.setColor(getContext().getResources().getColor(e.getColor()));
+                    paintList.add(eventPaint);
+                }
             }
             invalidate();
             requestLayout();
