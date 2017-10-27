@@ -81,11 +81,8 @@ public class CircularEventCellView extends BaseCellView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Set<Integer> stateSet = getStateSet();
-
         // draw only if there is no state or just one state i.e. the regular day state
-        if ((stateSet == null || stateSet.isEmpty() || (stateSet.size() == 1))
-                && paintList != null) {
+        if (paintList != null) {
             int num = paintList.size();
             for (int i = 0; i < num; i++) {
                 canvas.drawCircle(calculateStartPoint(i), eventCircleY, radius, paintList.get(i));

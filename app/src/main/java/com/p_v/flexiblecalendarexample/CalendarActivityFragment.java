@@ -33,7 +33,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        calendar.add(Calendar.DAY_OF_MONTH, 2);
+//        calendar.add(Calendar.DAY_OF_MONTH, 2);
     }
 
     @Override
