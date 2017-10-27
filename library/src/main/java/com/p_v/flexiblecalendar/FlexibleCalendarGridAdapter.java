@@ -13,6 +13,7 @@ import com.p_v.flexiblecalendar.view.BaseCellView;
 import com.p_v.flexiblecalendar.view.IDateCellViewDrawer;
 import com.p_v.fliexiblecalendar.R;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -122,6 +123,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
 
     private void drawDateCell(BaseCellView cellView, int day, int cellType) {
         cellView.clearAllStates();
+
         if (cellType != BaseCellView.OUTSIDE_MONTH) {
             cellView.setText(String.valueOf(day));
             cellView.setOnClickListener(new DateClickListener(day, month, year));
@@ -185,7 +187,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     public long getItemId(int position) {
         int row = position / 7;
         int col = position % 7;
-        return ((monthDisplayHelper.getDayAt(row, col)) + "" +position).hashCode();
+        return position;
     }
 
     public int getYear() {

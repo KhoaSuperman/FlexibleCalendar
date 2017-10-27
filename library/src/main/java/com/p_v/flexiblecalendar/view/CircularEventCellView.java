@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.fliexiblecalendar.R;
@@ -23,7 +24,7 @@ public class CircularEventCellView extends BaseCellView {
     private int radius;
     private int padding;
     private int leftMostPosition = Integer.MIN_VALUE;
-    private List<Paint> paintList;
+    private List<Paint> paintList = new ArrayList<>();
 
     public CircularEventCellView(Context context) {
         super(context);
@@ -55,27 +56,39 @@ public class CircularEventCellView extends BaseCellView {
 
         Set<Integer> stateSet = getStateSet();
 
-        //initialize paint objects only if there is no state or just one state i.e. the regular day state
-        if ((stateSet == null || stateSet.isEmpty()
-                || (stateSet.size() == 1 && stateSet.contains(STATE_REGULAR))) && paintList != null) {
-            int num = paintList.size();
+        Paint p = new Paint();
+        p.setTextSize(getTextSize());
 
-            Paint p = new Paint();
-            p.setTextSize(getTextSize());
+        Rect rect = new Rect();
+        p.getTextBounds("31", 0, 1, rect); // measuring using fake text
+
+        eventCircleY = (3 * getHeight() + rect.height()) / 4;
+    }
+
+    Paint pFake;
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int num = paintList.size();
+
+        if (pFake == null) {
+            pFake = new Paint();
+            pFake.setTextSize(getTextSize());
 
             Rect rect = new Rect();
-            p.getTextBounds("31", 0, 1, rect); // measuring using fake text
+            pFake.getTextBounds("31", 0, 1, rect); // measuring using fake text
 
-            eventCircleY = (3 * getHeight() + rect.height()) / 4;
+            eventCircleY = (3 * heightSize + rect.height()) / 4;
+        }
 
-            //calculate left most position for the circle
-            if (leftMostPosition == Integer.MIN_VALUE) {
-                leftMostPosition = (getWidth() / 2) - (num / 2) * 2 * (padding + radius);
-                if (num % 2 == 0) {
-                    leftMostPosition = leftMostPosition + radius + padding;
-                }
-            }
-
+        //calculate left most position for the circle
+        leftMostPosition = (widthSize / 2) - (num / 2) * 2 * (padding + radius);
+        if (num % 2 == 0) {
+            leftMostPosition = leftMostPosition + radius + padding;
         }
     }
 
@@ -88,11 +101,15 @@ public class CircularEventCellView extends BaseCellView {
         // draw only if there is no state or just one state i.e. the regular day state
         if ((stateSet == null || stateSet.isEmpty() || (stateSet.size() == 1
                 && stateSet.contains(STATE_REGULAR))) && paintList != null) {
-            int num = paintList.size();
-            for (int i = 0; i < num; i++) {
-                canvas.drawCircle(calculateStartPoint(i), eventCircleY, radius, paintList.get(i));
+            if (paintList != null) {
+                int num = paintList.size();
+                for (int i = 0; i < num; i++) {
+                    canvas.drawCircle(calculateStartPoint(i), eventCircleY, radius, paintList.get(i));
+                }
             }
         }
+
+
     }
 
     private int calculateStartPoint(int offset) {
@@ -109,6 +126,12 @@ public class CircularEventCellView extends BaseCellView {
                 eventPaint.setColor(getContext().getResources().getColor(e.getColor()));
                 paintList.add(eventPaint);
             }
+            invalidate();
+            requestLayout();
+        } else {
+            if (paintList != null)
+                paintList.clear();
+
             invalidate();
             requestLayout();
         }

@@ -149,19 +149,20 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
                     return eventColors;
                 }
 
-                if (year == 2016 && month == 10 && day == 12) {
+                if (month == calendar.get(Calendar.MONTH) && day == 1) {
                     List<CalendarEvent> eventColors = new ArrayList<>(2);
                     eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
                     eventColors.add(new CalendarEvent(android.R.color.holo_purple));
                     return eventColors;
                 }
 
-                if (year == 2016 && month == 10 && day == 7 ||
-                        year == 2016 && month == 10 && day == 29 ||
-                        year == 2016 && month == 10 && day == 5 ||
-                        year == 2016 && month == 10 && day == 9) {
+                if (month == calendar.get(Calendar.MONTH) && day == 7 ||
+                        month == calendar.get(Calendar.MONTH) && day == 29 ||
+                        month == calendar.get(Calendar.MONTH) && day == 5 ||
+                        month == calendar.get(Calendar.MONTH) && day == 9) {
                     List<CalendarEvent> eventColors = new ArrayList<>(1);
                     eventColors.add(new CalendarEvent(android.R.color.holo_blue_light));
+                    eventColors.add(new CalendarEvent(android.R.color.holo_green_dark));
                     return eventColors;
                 }
 
