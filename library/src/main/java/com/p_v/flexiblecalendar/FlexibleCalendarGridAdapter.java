@@ -118,15 +118,15 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         int col = position % 7;
         int day = monthDisplayHelper.getDayAt(row, col);
 
-        drawDateCell(holder.baseCellView, day, getItemViewType(position));
+        drawDateCell(holder.baseCellView, day, getItemViewType(position), position);
     }
 
-    private void drawDateCell(BaseCellView cellView, int day, int cellType) {
-        cellView.clearAllStates();
+    private void drawDateCell(BaseCellView cellView, int day, int cellType, int position) {
+//        cellView.clearAllStates();
 
         if (cellType != BaseCellView.OUTSIDE_MONTH) {
             cellView.setText(String.valueOf(day));
-            cellView.setOnClickListener(new DateClickListener(day, month, year));
+            cellView.setOnClickListener(new DateClickListener(day, month, year, position));
             // add events
             if (monthEventFetcher != null) {
                 cellView.setEvents(monthEventFetcher.getEventsForTheDay(year, month, day));
@@ -152,10 +152,10 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
                 //date outside month and less than equal to 12 means it belongs to next month otherwise previous
                 if (day <= 12) {
                     FlexibleCalendarHelper.nextMonth(year, month, temp);
-                    cellView.setOnClickListener(new DateClickListener(day, temp[1], temp[0]));
+                    cellView.setOnClickListener(new DateClickListener(day, temp[1], temp[0], position));
                 } else {
                     FlexibleCalendarHelper.previousMonth(year, month, temp);
-                    cellView.setOnClickListener(new DateClickListener(day, temp[1], temp[0]));
+                    cellView.setOnClickListener(new DateClickListener(day, temp[1], temp[0], position));
                 }
 
                 if (decorateDatesOutsideMonth && monthEventFetcher != null) {
@@ -169,7 +169,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
                 cellView.setOnClickListener(null);
             }
         }
-        cellView.refreshDrawableState();
+//        cellView.refreshDrawableState();
     }
 
     @Override
@@ -259,27 +259,42 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         List<? extends Event> getEventsForTheDay(int year, int month, int day);
     }
 
+    public void refresh(SelectedDateItem newSelectedItem) {
+//        int oldPos = 0;
+        int newPos;
+//        if (selectedItem != null) {
+//            oldPos = selectedItem.getPosition();
+//        }
+        newPos = newSelectedItem.getPosition();
+//
+//        selectedItem = newSelectedItem;
+//
+        notifyItemChanged(newPos);
+//        notifyItemChanged(oldPos);
+    }
+
     private class DateClickListener implements View.OnClickListener {
 
         private int iDay;
         private int iMonth;
         private int iYear;
+        private int iPosition;
 
-        public DateClickListener(int day, int month, int year) {
+        public DateClickListener(int day, int month, int year, int position) {
             this.iDay = day;
             this.iMonth = month;
             this.iYear = year;
+            this.iPosition = position;
         }
 
         @Override
         public void onClick(final View v) {
-            selectedItem = new SelectedDateItem(iYear, iMonth, iDay);
+            selectedItem = new SelectedDateItem(iYear, iMonth, iDay, iPosition);
+            refresh(selectedItem);
 
             if (disableAutoDateSelection) {
                 userSelectedDateItem = selectedItem;
             }
-
-            notifyDataSetChanged();
 
             if (onDateCellItemClickListener != null) {
                 onDateCellItemClickListener.onDateClick(selectedItem);

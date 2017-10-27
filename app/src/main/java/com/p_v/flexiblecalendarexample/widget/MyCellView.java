@@ -19,8 +19,10 @@ import java.util.List;
 public class MyCellView extends CircularEventCellView {
 
     ArrayList<MyEvent> myEvents = new ArrayList<>();
-    Drawable dfBackground;
-    int dfTextColor;
+    Drawable dfBg;
+    int dfTextColor = 0;
+    static Drawable dfBgSelected;
+    static int dfTextWhite = 0;
 
     public MyCellView(Context context) {
         super(context);
@@ -33,8 +35,13 @@ public class MyCellView extends CircularEventCellView {
     }
 
     private void init() {
-        dfBackground = getBackground();
+        dfBg = getBackground();
         dfTextColor = getCurrentTextColor();
+
+        if (dfBgSelected == null) {
+            dfBgSelected = getContext().getResources().getDrawable(R.drawable.inset_cell_selected);
+            dfTextWhite = getContext().getResources().getColor(android.R.color.white);
+        }
     }
 
     @Override
@@ -47,8 +54,8 @@ public class MyCellView extends CircularEventCellView {
         super.onDraw(canvas);
 
         if (getStateSet().contains(STATE_SELECTED)) {
-            setBackground(getContext().getResources().getDrawable(R.drawable.inset_cell_selected));
-            setTextColor(getContext().getResources().getColor(android.R.color.white));
+            setBackground(dfBgSelected);
+            setTextColor(dfTextWhite);
         } else {
             if (myEvents.size() > 0) {
                 for (MyEvent myEvent : myEvents) {
@@ -56,7 +63,7 @@ public class MyCellView extends CircularEventCellView {
                     setTextColor(getContext().getResources().getColor(android.R.color.white));
                 }
             } else {
-                setBackground(dfBackground);
+                setBackground(dfBg);
                 setTextColor(dfTextColor);
             }
         }

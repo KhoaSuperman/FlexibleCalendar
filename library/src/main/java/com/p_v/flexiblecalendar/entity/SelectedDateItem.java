@@ -8,16 +8,24 @@ public class SelectedDateItem {
     private int day;
     private int month;
     private int year;
+    private int position;
 
     public SelectedDateItem(int year, int month, int day) {
+        this.day = day;
+        this.month = month;
+        this.year = year;
+    }
+
+    public SelectedDateItem(int year, int month, int day, int position) {
         this.year = year;
         this.month = month;
         this.day = day;
+        this.position = position;
     }
 
     @Override
     public SelectedDateItem clone() {
-        return new SelectedDateItem(year, month, day);
+        return new SelectedDateItem(year, month, day, position);
     }
 
     public int getDay() {
@@ -42,6 +50,10 @@ public class SelectedDateItem {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     @Override

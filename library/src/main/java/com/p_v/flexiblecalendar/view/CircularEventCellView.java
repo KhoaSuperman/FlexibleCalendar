@@ -50,21 +50,6 @@ public class CircularEventCellView extends BaseCellView {
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-
-        Set<Integer> stateSet = getStateSet();
-
-        Paint p = new Paint();
-        p.setTextSize(getTextSize());
-
-        Rect rect = new Rect();
-        p.getTextBounds("31", 0, 1, rect); // measuring using fake text
-
-        eventCircleY = (3 * getHeight() + rect.height()) / 4;
-    }
-
     Paint pFake;
 
     @Override

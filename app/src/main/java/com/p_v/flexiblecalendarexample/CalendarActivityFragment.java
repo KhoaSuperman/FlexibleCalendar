@@ -202,6 +202,6 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
             Log.d("Event", "----");
         }
 
-        Toast.makeText(getActivity(), cal.getTime().toString() + " Clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), cal.getTime().toString() + " Clicked", Toast.LENGTH_SHORT).show();
     }
 }

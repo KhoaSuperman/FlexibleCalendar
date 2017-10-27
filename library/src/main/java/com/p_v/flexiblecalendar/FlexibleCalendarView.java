@@ -289,8 +289,8 @@ public class FlexibleCalendarView extends LinearLayout implements
             this.selectedDateItem = selectedItem;
         }
 
-        // redraw current month grid as the events were getting disappeared for selected day
-        redrawMonthGrid(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER);
+//        // redraw current month grid as the events were getting disappeared for selected day
+//        redrawMonthGrid(lastPosition % MonthViewPagerAdapter.VIEWS_IN_PAGER, selectedItem);
 
         // set user selected date item
         if (disableAutoDateSelection) {
@@ -302,24 +302,30 @@ public class FlexibleCalendarView extends LinearLayout implements
         }
     }
 
-    private void redrawMonthGrid(int position) {
+    private void redrawMonthGrid() {
+        for (int i = 0; i <= 3; i++) {
+            View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX + i);
+            ((RecyclerView) view).getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    private void redrawMonthGrid(int position, SelectedDateItem selectedItem) {
         if (position == -1) {
             //redraw all
             for (int i = 0; i <= 3; i++) {
                 View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX + i);
-                reAddAdapter(view);
+                reAddAdapter(view, selectedItem);
             }
         } else {
             View view = monthViewPager.findViewWithTag(MonthViewPagerAdapter.GRID_TAG_PREFIX + position);
-            reAddAdapter(view);
+            reAddAdapter(view, selectedItem);
         }
     }
 
-    private void reAddAdapter(View view) {
+    private void reAddAdapter(View view, SelectedDateItem selectedItem) {
         if (view != null) {
-            RecyclerView.Adapter adapter = ((RecyclerView) view).getAdapter();
-//            ((RecyclerView) view).setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            FlexibleCalendarGridAdapter adapter = (FlexibleCalendarGridAdapter) ((RecyclerView) view).getAdapter();
+            adapter.refresh(selectedItem);
         }
     }
 
@@ -622,7 +628,7 @@ public class FlexibleCalendarView extends LinearLayout implements
      * Refresh the calendar view. Invalidate and redraw all the cells
      */
     public void refresh() {
-        redrawMonthGrid(-1);
+        redrawMonthGrid();
     }
 
     /**

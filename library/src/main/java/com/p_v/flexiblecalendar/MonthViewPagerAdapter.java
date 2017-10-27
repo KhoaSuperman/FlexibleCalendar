@@ -6,6 +6,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,6 +136,7 @@ public class MonthViewPagerAdapter extends PagerAdapter {
         RecyclerView view = (RecyclerView) inflater.inflate(R.layout.month_grid_layout, null);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(container.getContext(), 7, LinearLayoutManager.VERTICAL, false);
         view.setLayoutManager(gridLayoutManager);
+        ((SimpleItemAnimator) view.getItemAnimator()).setSupportsChangeAnimations(false);
 
         view.setTag(GRID_TAG_PREFIX + position);
         view.setAdapter(adapter);
