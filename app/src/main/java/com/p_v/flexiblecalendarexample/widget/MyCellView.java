@@ -2,7 +2,12 @@ package com.p_v.flexiblecalendarexample.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
 import com.p_v.flexiblecalendar.entity.Event;
@@ -18,10 +23,10 @@ import java.util.List;
  */
 public class MyCellView extends CircularEventCellView {
 
-    ArrayList<MyEvent> myEvents = new ArrayList<>();
-    Drawable dfBg;
+    MyEvent myEvent;
+    int dfBg;
     int dfTextColor = 0;
-    static Drawable dfBgSelected;
+    static int dfBgSelected;
     static int dfTextWhite = 0;
 
     public MyCellView(Context context) {
@@ -35,12 +40,12 @@ public class MyCellView extends CircularEventCellView {
     }
 
     private void init() {
-        dfBg = getBackground();
+//        dfBg = getBackground();
         dfTextColor = getCurrentTextColor();
 
-        if (dfBgSelected == null) {
-            dfBgSelected = getContext().getResources().getDrawable(R.drawable.inset_cell_selected);
-            dfTextWhite = getContext().getResources().getColor(android.R.color.white);
+        if (dfBgSelected == 0) {
+            dfBgSelected = ContextCompat.getColor(getContext(), R.color.black);
+            dfTextWhite = ContextCompat.getColor(getContext(), android.R.color.white);
         }
     }
 
@@ -49,33 +54,49 @@ public class MyCellView extends CircularEventCellView {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 
+    Paint pSelected;
+    RectF rectSelected;
+    int offset = 35;
+
+    Paint pEvent;
+
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+        if (pSelected == null) {
+            pSelected = new Paint();
+            pSelected.setAntiAlias(true);
+            pSelected.setColor(dfBgSelected);
+
+            rectSelected = new RectF(offset, offset, getWidth() - offset, getHeight() - offset);
+        }
 
         if (getStateSet().contains(STATE_SELECTED)) {
-            setBackground(dfBgSelected);
             setTextColor(dfTextWhite);
+            canvas.drawRoundRect(rectSelected, 6, 6, pSelected);
         } else {
-            if (myEvents.size() > 0) {
-                for (MyEvent myEvent : myEvents) {
-                    setBackground(getContext().getResources().getDrawable(myEvent.getBgColor()));
-                    setTextColor(getContext().getResources().getColor(android.R.color.white));
+            if (myEvent != null) {
+                if (pEvent == null) {
+                    pEvent = new Paint();
+                    pEvent.setAntiAlias(true);
+                    pEvent.setColor(myEvent.getBgColor());
                 }
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 4, pEvent);
+                setTextColor(dfTextWhite);
             } else {
-                setBackground(dfBg);
                 setTextColor(dfTextColor);
             }
         }
+
+        super.onDraw(canvas);
     }
 
     public void setEvents(List<? extends Event> events) {
-        myEvents.clear();
+        myEvent = null;
         if (events != null) {
             for (Event event : events) {
                 MyEvent myEvent = (MyEvent) event;
                 if (myEvent.getColor() == 0)
-                    this.myEvents.add(myEvent);
+                    this.myEvent = myEvent;
             }
         }
 

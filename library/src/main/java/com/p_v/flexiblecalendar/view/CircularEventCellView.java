@@ -43,14 +43,13 @@ public class CircularEventCellView extends BaseCellView {
     private void init(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CircularEventCellView);
         try {
-            radius = (int) a.getDimension(R.styleable.CircularEventCellView_event_radius, 5);
+            int dfRadius = (int) (getContext().getResources().getDisplayMetrics().density * 3);
+            radius = (int) a.getDimension(R.styleable.CircularEventCellView_event_radius, dfRadius);
             padding = (int) a.getDimension(R.styleable.CircularEventCellView_event_circle_padding, 1);
         } finally {
             a.recycle();
         }
     }
-
-    Paint pFake;
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -60,15 +59,7 @@ public class CircularEventCellView extends BaseCellView {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int num = paintList.size();
 
-        if (pFake == null) {
-            pFake = new Paint();
-            pFake.setTextSize(getTextSize());
-
-            Rect rect = new Rect();
-            pFake.getTextBounds("31", 0, 1, rect); // measuring using fake text
-
-            eventCircleY = (3 * heightSize + rect.height()) / 4;
-        }
+        eventCircleY = heightSize - radius * 3;
 
         //calculate left most position for the circle
         leftMostPosition = (widthSize / 2) - (num / 2) * 2 * (padding + radius);
@@ -81,7 +72,6 @@ public class CircularEventCellView extends BaseCellView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // draw only if there is no state or just one state i.e. the regular day state
         if (paintList != null) {
             int num = paintList.size();
             for (int i = 0; i < num; i++) {
@@ -102,7 +92,7 @@ public class CircularEventCellView extends BaseCellView {
                 if (e.getColor() != 0) {
                     Paint eventPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                     eventPaint.setStyle(Paint.Style.FILL);
-                    eventPaint.setColor(getContext().getResources().getColor(e.getColor()));
+                    eventPaint.setColor(e.getColor());
                     paintList.add(eventPaint);
                 }
             }

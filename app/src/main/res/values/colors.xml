@@ -5,4 +5,5 @@
     <color name="date_outside_month_text_color_activity_1">#A1F5FF</color>
     <color name="background_name_of_dayweek_bar">#E6E6CD</color>
     <color name="text_name_of_dayweek_bar">@android:color/black</color>
+    <color name="black">#2E373D</color>
 </resources>

@@ -3,6 +3,7 @@ package com.p_v.flexiblecalendarexample;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,9 +53,6 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
                     case BaseCellView.OUTSIDE_MONTH:
                         layout = R.layout.item_cell_day_outside;
                         break;
-                    case BaseCellView.SELECTED:
-                        layout = R.layout.item_cell_selected;
-                        break;
                     case BaseCellView.TODAY:
                         layout = R.layout.item_cell_today;
                         break;
@@ -79,7 +77,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
 
             @Override
             public String getDayOfWeekDisplayValue(int dayOfWeek, String defaultValue) {
-                return String.valueOf(defaultValue.charAt(0));
+                return null;
             }
         });
         calendarView.setOnMonthChangeListener(this);
@@ -99,22 +97,22 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
 
                 if (year == calendar.get(Calendar.YEAR) && month == calendar.get(Calendar.MONTH) && day == calendar.get(Calendar.DAY_OF_MONTH)) {
                     List<MyEvent> eventColors = new ArrayList<>(5);
-                    eventColors.add(new MyEvent(android.R.color.holo_blue_light, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_purple, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_green_dark, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_orange_dark, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_red_dark, day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_blue_light), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_purple), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_orange_dark), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark), day, month, year));
                     return eventColors;
                 }
 
                 if (day == 10) {
                     List<MyEvent> eventColors = new ArrayList<>(5);
-                    eventColors.add(new MyEvent(android.R.color.holo_green_dark, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_orange_dark, day, month, year));
-                    eventColors.add(new MyEvent(android.R.color.holo_red_dark, day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_orange_dark), day, month, year));
+                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark), day, month, year));
 
                     MyEvent dayOff = new MyEvent(0, day, month, year);
-                    dayOff.setBgColor(R.drawable.inset_cell_shift);
+                    dayOff.setBgColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
                     eventColors.add(dayOff);
                     return eventColors;
                 }
@@ -122,7 +120,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
                 if (day == 15 || day == 25) {
                     List<MyEvent> eventColors = new ArrayList<>(5);
                     MyEvent dayOff = new MyEvent(0, day, month, year);
-                    dayOff.setBgColor(R.drawable.inset_cell_off);
+                    dayOff.setBgColor(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark));
                     eventColors.add(dayOff);
                     return eventColors;
                 }
