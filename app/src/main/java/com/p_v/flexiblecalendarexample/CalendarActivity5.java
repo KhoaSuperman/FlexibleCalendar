@@ -67,5 +67,25 @@ public class CalendarActivity5 extends AppCompatActivity {
         public int getColor() {
             return R.color.material_grey_900;
         }
+
+        @Override
+        public boolean isMatchDate(int day, int month, int year) {
+            return false;
+        }
+
+        @Override
+        public int getDay() {
+            return 0;
+        }
+
+        @Override
+        public int getMonth() {
+            return 0;
+        }
+
+        @Override
+        public int getYear() {
+            return 0;
+        }
     }
 }

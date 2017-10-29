@@ -91,43 +91,13 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     }
 
     private void fillEvents() {
-        calendarView.setEventDataProvider(new FlexibleCalendarView.EventDataProvider() {
-            @Override
-            public List<MyEvent> getEventsForTheDay(int year, int month, int day) {
+        List<MyEvent> eventColors = new ArrayList<>(5);
+        eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_blue_light), 17, 10, 2017));
+        eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_purple), 22, 10, 2017));
+        eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark), 29, 10, 2017));
+        eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_orange_dark), 29, 10, 2017));
 
-                if (year == calendar.get(Calendar.YEAR) && month == calendar.get(Calendar.MONTH) && day == calendar.get(Calendar.DAY_OF_MONTH)) {
-                    List<MyEvent> eventColors = new ArrayList<>(5);
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_blue_light), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_purple), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_orange_dark), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark), day, month, year));
-                    return eventColors;
-                }
-
-                if (day == 10) {
-                    List<MyEvent> eventColors = new ArrayList<>(5);
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_orange_dark), day, month, year));
-                    eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark), day, month, year));
-
-                    MyEvent dayOff = new MyEvent(0, day, month, year);
-                    dayOff.setBgColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
-                    eventColors.add(dayOff);
-                    return eventColors;
-                }
-
-                if (day == 15 || day == 25) {
-                    List<MyEvent> eventColors = new ArrayList<>(5);
-                    MyEvent dayOff = new MyEvent(0, day, month, year);
-                    dayOff.setBgColor(ContextCompat.getColor(getContext(), android.R.color.holo_green_dark));
-                    eventColors.add(dayOff);
-                    return eventColors;
-                }
-
-                return null;
-            }
-        });
+        calendarView.setEvents(10, 2017, eventColors);
     }
 
     @Override
@@ -199,7 +169,5 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
 
             Log.d("Event", "----");
         }
-
-//        Toast.makeText(getActivity(), cal.getTime().toString() + " Clicked", Toast.LENGTH_SHORT).show();
     }
 }

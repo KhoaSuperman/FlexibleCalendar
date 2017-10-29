@@ -37,4 +37,24 @@ public class MyEvent implements Event {
     public int getColor() {
         return color;
     }
+
+    @Override
+    public boolean isMatchDate(int day, int month, int year) {
+        return this.day == day && this.month == month && this.year == year;
+    }
+
+    @Override
+    public int getDay() {
+        return day;
+    }
+
+    @Override
+    public int getMonth() {
+        return month;
+    }
+
+    @Override
+    public int getYear() {
+        return year;
+    }
 }

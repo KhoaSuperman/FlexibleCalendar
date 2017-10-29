@@ -329,6 +329,15 @@ public class FlexibleCalendarView extends LinearLayout implements
         }
     }
 
+    public void setEvents(int month, int year, List<? extends Event> events) {
+        for (int i = 0; i < monthViewPagerAdapter.getCount(); i++) {
+            FlexibleCalendarGridAdapter monthAdapter = monthViewPagerAdapter.getMonthAdapterAtPosition(i);
+            if (monthAdapter.getMonth() == month && monthAdapter.getYear() == year) {
+                monthAdapter.setEvents(events);
+            }
+        }
+    }
+
     /**
      * @return currently selected date
      */
@@ -407,8 +416,14 @@ public class FlexibleCalendarView extends LinearLayout implements
 
     @Override
     public List<? extends Event> getEventsForTheDay(int year, int month, int day) {
-        return eventDataProvider == null ?
-                null : eventDataProvider.getEventsForTheDay(year, month, day);
+        for (int i = 0; i < monthViewPagerAdapter.getCount(); i++) {
+            FlexibleCalendarGridAdapter monthAdapter = monthViewPagerAdapter.getMonthAdapterAtPosition(i);
+            if (monthAdapter.getMonth() == month && monthAdapter.getYear() == year) {
+                return monthAdapter.getEvents(day);
+            }
+        }
+
+        return null;
     }
 
     /**

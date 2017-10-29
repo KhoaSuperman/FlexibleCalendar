@@ -31,12 +31,14 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     private OnDateCellItemClickListener onDateCellItemClickListener;
     private SelectedDateItem selectedItem;
     private SelectedDateItem userSelectedDateItem;
-    private MonthEventFetcher monthEventFetcher;
     private IDateCellViewDrawer cellViewDrawer;
     private boolean showDatesOutsideMonth;
     private boolean decorateDatesOutsideMonth;
     private boolean disableAutoDateSelection;
 
+    List<? extends Event> events;
+    ArrayList<CellData> cellDatas = new ArrayList<>();
+    int itemCount;
 
     public FlexibleCalendarGridAdapter(Context context, int year, int month,
                                        boolean showDatesOutsideMonth, boolean decorateDatesOutsideMonth, int startDayOfTheWeek,
@@ -54,6 +56,40 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         this.month = month;
         this.monthDisplayHelper = new MonthDisplayHelper(year, month, startDayOfTheWeek);
         this.calendar = FlexibleCalendarHelper.getLocalizedCalendar(context);
+
+        //calculate item count
+        int weekStartDay = monthDisplayHelper.getWeekStartDay();
+        int firstDayOfWeek = monthDisplayHelper.getFirstDayOfMonth();
+        int diff = firstDayOfWeek - weekStartDay;
+        int toAdd = diff < 0 ? (diff + 7) : diff;
+        showDatesOutsideMonth = true;
+        itemCount = showDatesOutsideMonth ? SIX_WEEK_DAY_COUNT
+                : monthDisplayHelper.getNumberOfDaysInMonth()
+                + toAdd;
+
+        //gen day data
+        for (int i = 0; i < itemCount; i++) {
+            int row = i / 7;
+            int col = i % 7;
+            int day = monthDisplayHelper.getDayAt(row, col);
+            cellDatas.add(new CellData(day, month, year, i));
+        }
+    }
+
+    public void setEvents(List<? extends Event> events) {
+        for (int i = 0; i < cellDatas.size(); i++) {
+            CellData cellData = cellDatas.get(i);
+
+            ArrayList<Event> list = new ArrayList<>();
+            for (Event event : events) {
+                if (cellData.day == event.getDay() && cellData.month == event.getMonth() && cellData.year == event.getYear()) {
+                    list.add(event);
+                }
+            }
+
+            cellData.setDayEvents(list);
+            notifyItemChanged(i);
+        }
     }
 
     @Override
@@ -114,23 +150,20 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
 
     @Override
     public void onBindViewHolder(CellHolder holder, int position) {
-        int row = position / 7;
-        int col = position % 7;
-        int day = monthDisplayHelper.getDayAt(row, col);
+        CellData cellData = cellDatas.get(position);
 
-        drawDateCell(holder.baseCellView, day, getItemViewType(position), position);
+        drawDateCell(holder.baseCellView, cellData);
     }
 
-    private void drawDateCell(BaseCellView cellView, int day, int cellType, int position) {
-//        cellView.clearAllStates();
+    private void drawDateCell(BaseCellView cellView, CellData cellData) {
+        int day = cellData.day;
+        int position = cellData.position;
+        int cellType = getItemViewType(position);
 
         if (cellType != BaseCellView.OUTSIDE_MONTH) {
             cellView.setText(String.valueOf(day));
             cellView.setOnClickListener(new DateClickListener(day, month, year, position));
-            // add events
-            if (monthEventFetcher != null) {
-                cellView.setEvents(monthEventFetcher.getEventsForTheDay(year, month, day));
-            }
+            cellView.setEvents(cellData.dayEvents);
             switch (cellType) {
                 case BaseCellView.SELECTED_TODAY:
                     cellView.addState(BaseCellView.STATE_TODAY);
@@ -158,8 +191,8 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
                     cellView.setOnClickListener(new DateClickListener(day, temp[1], temp[0], position));
                 }
 
-                if (decorateDatesOutsideMonth && monthEventFetcher != null) {
-                    cellView.setEvents(monthEventFetcher.getEventsForTheDay(temp[0], temp[1], day));
+                if (decorateDatesOutsideMonth && cellData.dayEvents != null) {
+                    cellView.setEvents(cellData.dayEvents);
                 }
 
                 cellView.addState(BaseCellView.STATE_OUTSIDE_MONTH);
@@ -169,24 +202,15 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
                 cellView.setOnClickListener(null);
             }
         }
-//        cellView.refreshDrawableState();
     }
 
     @Override
     public int getItemCount() {
-        int weekStartDay = monthDisplayHelper.getWeekStartDay();
-        int firstDayOfWeek = monthDisplayHelper.getFirstDayOfMonth();
-        int diff = firstDayOfWeek - weekStartDay;
-        int toAdd = diff < 0 ? (diff + 7) : diff;
-        return showDatesOutsideMonth ? SIX_WEEK_DAY_COUNT
-                : monthDisplayHelper.getNumberOfDaysInMonth()
-                + toAdd;
+        return itemCount;
     }
 
     @Override
     public long getItemId(int position) {
-        int row = position / 7;
-        int col = position % 7;
         return position;
     }
 
@@ -215,7 +239,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     void setMonthEventFetcher(MonthEventFetcher monthEventFetcher) {
-        this.monthEventFetcher = monthEventFetcher;
+//        this.monthEventFetcher = monthEventFetcher;
     }
 
     public void setCellViewDrawer(IDateCellViewDrawer cellViewDrawer) {
@@ -251,6 +275,15 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         notifyDataSetChanged();
     }
 
+    public List<? extends Event> getEvents(int day) {
+        for (CellData cellData : cellDatas) {
+            if (cellData.day == day) {
+                return cellData.dayEvents;
+            }
+        }
+        return null;
+    }
+
     public interface OnDateCellItemClickListener {
         void onDateClick(SelectedDateItem selectedItem);
     }
@@ -260,17 +293,28 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     public void refresh(SelectedDateItem newSelectedItem) {
-//        int oldPos = 0;
         int newPos;
-//        if (selectedItem != null) {
-//            oldPos = selectedItem.getPosition();
-//        }
         newPos = newSelectedItem.getPosition();
-//
-//        selectedItem = newSelectedItem;
-//
         notifyItemChanged(newPos);
-//        notifyItemChanged(oldPos);
+    }
+
+    private class CellData {
+        int day;
+        int month;
+        int year;
+        List<? extends Event> dayEvents;
+        int position;
+
+        public CellData(int day, int month, int year, int position) {
+            this.day = day;
+            this.month = month;
+            this.year = year;
+            this.position = position;
+        }
+
+        public void setDayEvents(List<? extends Event> dayEvents) {
+            this.dayEvents = dayEvents;
+        }
     }
 
     private class DateClickListener implements View.OnClickListener {
@@ -290,6 +334,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         @Override
         public void onClick(final View v) {
             selectedItem = new SelectedDateItem(iYear, iMonth, iDay, iPosition);
+
             refresh(selectedItem);
 
             if (disableAutoDateSelection) {
