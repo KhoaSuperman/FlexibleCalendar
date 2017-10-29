@@ -91,6 +91,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     }
 
     private void fillEvents() {
+        //NOTE: each time month change, need refill event data
         List<MyEvent> eventColors = new ArrayList<>(5);
         eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_blue_light), 17, 10, 2017));
         eventColors.add(new MyEvent(ContextCompat.getColor(getContext(), android.R.color.holo_purple), 22, 10, 2017));

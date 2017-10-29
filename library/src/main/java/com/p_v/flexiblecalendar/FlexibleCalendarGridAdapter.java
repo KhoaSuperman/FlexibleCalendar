@@ -68,11 +68,9 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
                 + toAdd;
 
         //gen day data
+        cellDatas.clear();
         for (int i = 0; i < itemCount; i++) {
-            int row = i / 7;
-            int col = i % 7;
-            int day = monthDisplayHelper.getDayAt(row, col);
-            cellDatas.add(new CellData(day, month, year, i));
+            cellDatas.add(new CellData(month, year, i));
         }
     }
 
@@ -82,7 +80,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
 
             ArrayList<Event> list = new ArrayList<>();
             for (Event event : events) {
-                if (cellData.day == event.getDay() && cellData.month == event.getMonth() && cellData.year == event.getYear()) {
+                if (getDayByPosition(i) == event.getDay() && cellData.month == event.getMonth() && cellData.year == event.getYear()) {
                     list.add(event);
                 }
             }
@@ -90,6 +88,12 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
             cellData.setDayEvents(list);
             notifyItemChanged(i);
         }
+    }
+
+    public int getDayByPosition(int position) {
+        int row = position / 7;
+        int col = position % 7;
+        return monthDisplayHelper.getDayAt(row, col);
     }
 
     @Override
@@ -156,7 +160,9 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     private void drawDateCell(BaseCellView cellView, CellData cellData) {
-        int day = cellData.day;
+        int row = cellData.position / 7;
+        int col = cellData.position % 7;
+        int day = monthDisplayHelper.getDayAt(row, col);
         int position = cellData.position;
         int cellType = getItemViewType(position);
 
@@ -276,11 +282,12 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     public List<? extends Event> getEvents(int day) {
-        for (CellData cellData : cellDatas) {
-            if (cellData.day == day) {
-                return cellData.dayEvents;
+        for (int i = 0; i < cellDatas.size(); i++) {
+            if (getDayByPosition(i) == day) {
+                return cellDatas.get(i).dayEvents;
             }
         }
+
         return null;
     }
 
@@ -299,14 +306,12 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     private class CellData {
-        int day;
         int month;
         int year;
         List<? extends Event> dayEvents;
         int position;
 
-        public CellData(int day, int month, int year, int position) {
-            this.day = day;
+        public CellData(int month, int year, int position) {
             this.month = month;
             this.year = year;
             this.position = position;
