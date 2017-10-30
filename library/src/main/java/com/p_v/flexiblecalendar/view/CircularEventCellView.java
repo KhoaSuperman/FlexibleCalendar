@@ -59,7 +59,7 @@ public class CircularEventCellView extends BaseCellView {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int num = paintList.size();
 
-        eventCircleY = heightSize - radius * 3;
+        eventCircleY = heightSize - radius;
 
         //calculate left most position for the circle
         leftMostPosition = (widthSize / 2) - (num / 2) * 2 * (padding + radius);
