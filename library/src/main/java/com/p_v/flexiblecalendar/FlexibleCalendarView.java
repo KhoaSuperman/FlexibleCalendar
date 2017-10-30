@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter;
+import com.p_v.flexiblecalendar.entity.CellData;
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
 import com.p_v.flexiblecalendar.exception.HighValueException;
@@ -271,7 +272,7 @@ public class FlexibleCalendarView extends LinearLayout implements
     }
 */
     @Override
-    public void onDateClick(SelectedDateItem selectedItem) {
+    public void onDateClick(SelectedDateItem selectedItem, CellData cellData) {
         if (selectedDateItem.getYear() != selectedItem.getYear() || selectedDateItem.getMonth() != selectedItem.getMonth()) {
             shouldOverrideComputedDate = true;
             //different month
@@ -298,7 +299,7 @@ public class FlexibleCalendarView extends LinearLayout implements
         }
 
         if (onDateClickListener != null) {
-            onDateClickListener.onDateClick(selectedItem.getYear(), selectedItem.getMonth(), selectedItem.getDay());
+            onDateClickListener.onDateClick(cellData);
         }
     }
 
@@ -813,11 +814,8 @@ public class FlexibleCalendarView extends LinearLayout implements
         /**
          * Called whenever a date cell is clicked
          *
-         * @param day   selected day
-         * @param month selected month
-         * @param year  selected year
          */
-        void onDateClick(int year, int month, int day);
+        void onDateClick(CellData cellData);
     }
 
     /**

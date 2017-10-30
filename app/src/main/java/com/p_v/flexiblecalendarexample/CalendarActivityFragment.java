@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.p_v.flexiblecalendar.FlexibleCalendarView;
+import com.p_v.flexiblecalendar.entity.CellData;
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.view.BaseCellView;
 import com.p_v.flexiblecalendar.view.SquareCellView;
@@ -161,11 +162,11 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     }
 
     @Override
-    public void onDateClick(int year, int month, int day) {
+    public void onDateClick(CellData cellData) {
         Calendar cal = Calendar.getInstance();
-        cal.set(year, month, day);
+        cal.set(cellData.year, cellData.month, cellData.day);
 
-        List<? extends Event> events = calendarView.getEventsForTheDay(year, month, day);
+        List<? extends Event> events = calendarView.getEventsForTheDay(cellData.year, cellData.month, cellData.day);
         if (events != null) {
             for (Event event : events) {
                 MyEvent calendarEvent = (MyEvent) event;

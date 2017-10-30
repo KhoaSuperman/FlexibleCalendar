@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.p_v.flexiblecalendar.entity.CellData;
 import com.p_v.flexiblecalendar.entity.Event;
 import com.p_v.flexiblecalendar.entity.SelectedDateItem;
 import com.p_v.flexiblecalendar.view.BaseCellView;
@@ -70,7 +71,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         //gen day data
         cellDatas.clear();
         for (int i = 0; i < itemCount; i++) {
-            cellDatas.add(new CellData(month, year, i));
+            cellDatas.add(new CellData(getDayByPosition(i), month, year, i));
         }
     }
 
@@ -292,7 +293,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     public interface OnDateCellItemClickListener {
-        void onDateClick(SelectedDateItem selectedItem);
+        void onDateClick(SelectedDateItem selectedItem, CellData cellData);
     }
 
     interface MonthEventFetcher {
@@ -303,23 +304,6 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
         int newPos;
         newPos = newSelectedItem.getPosition();
         notifyItemChanged(newPos);
-    }
-
-    private class CellData {
-        int month;
-        int year;
-        List<? extends Event> dayEvents;
-        int position;
-
-        public CellData(int month, int year, int position) {
-            this.month = month;
-            this.year = year;
-            this.position = position;
-        }
-
-        public void setDayEvents(List<? extends Event> dayEvents) {
-            this.dayEvents = dayEvents;
-        }
     }
 
     private class DateClickListener implements View.OnClickListener {
@@ -347,7 +331,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
             }
 
             if (onDateCellItemClickListener != null) {
-                onDateCellItemClickListener.onDateClick(selectedItem);
+                onDateCellItemClickListener.onDateClick(selectedItem, cellDatas.get(iPosition));
             }
         }
     }
