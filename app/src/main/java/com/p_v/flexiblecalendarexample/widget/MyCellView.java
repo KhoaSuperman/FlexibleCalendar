@@ -24,10 +24,10 @@ import java.util.List;
 public class MyCellView extends CircularEventCellView {
 
     MyEvent myEvent;
-    int dfBg;
     int dfTextColor = 0;
     static int dfBgSelected;
     static int dfTextWhite = 0;
+    static int selectedPadding;
 
     public MyCellView(Context context) {
         super(context);
@@ -40,12 +40,12 @@ public class MyCellView extends CircularEventCellView {
     }
 
     private void init() {
-//        dfBg = getBackground();
         dfTextColor = getCurrentTextColor();
 
         if (dfBgSelected == 0) {
             dfBgSelected = ContextCompat.getColor(getContext(), R.color.black);
             dfTextWhite = ContextCompat.getColor(getContext(), android.R.color.white);
+            selectedPadding = (int) (getContext().getResources().getDisplayMetrics().density * 6);
         }
     }
 
@@ -56,7 +56,6 @@ public class MyCellView extends CircularEventCellView {
 
     Paint pSelected;
     RectF rectSelected;
-    int offset = 35;
 
     Paint pEvent;
 
@@ -67,7 +66,12 @@ public class MyCellView extends CircularEventCellView {
             pSelected.setAntiAlias(true);
             pSelected.setColor(dfBgSelected);
 
-            rectSelected = new RectF(offset, offset, getWidth() - offset, getHeight() - offset);
+            float textSize = getPaint().measureText("31", 0, 2) + selectedPadding;
+            int left = (int) ((getWidth() - textSize) / 2);
+            int top = left;
+            int right = (int) (left + textSize);
+            int bottom = right;
+            rectSelected = new RectF(left, top, right, bottom);
         }
 
         if (getStateSet().contains(STATE_SELECTED)) {

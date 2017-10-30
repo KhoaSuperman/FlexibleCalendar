@@ -20,8 +20,8 @@ import java.util.Set;
  */
 public class CircularEventCellView extends BaseCellView {
 
-    private int eventCircleY;
-    private int radius;
+    protected int eventCircleY;
+    protected int radius;
     private int padding;
     private int leftMostPosition = Integer.MIN_VALUE;
     private List<Paint> paintList = new ArrayList<>();
