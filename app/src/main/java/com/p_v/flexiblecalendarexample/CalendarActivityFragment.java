@@ -36,7 +36,6 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        calendar.add(Calendar.DAY_OF_MONTH, 2);
     }
 
     @Override
@@ -84,6 +83,8 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
         });
         calendarView.setOnMonthChangeListener(this);
         calendarView.setOnDateClickListener(this);
+        calendarView.setDisableAutoDateSelection(true);
+        calendarView.selectDate(calendar, true);
 
         fillEvents();
 
@@ -111,7 +112,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        updateTitle(calendarView.getSelectedDateItem().getYear(), calendarView.getSelectedDateItem().getMonth());
+//        updateTitle(calendarView.getSelectedDateItem().getYear(), calendarView.getSelectedDateItem().getMonth());
     }
 
     public void setupToolBar(View mainView) {
@@ -166,6 +167,8 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
     public void onDateClick(CellData cellData) {
         Calendar cal = Calendar.getInstance();
         cal.set(cellData.year, cellData.month, cellData.day);
+
+        Log.d("onDateClick", cellData.toString());
 
         List<? extends Event> events = calendarView.getEventsForTheDay(cellData.year, cellData.month, cellData.day);
         if (events != null) {

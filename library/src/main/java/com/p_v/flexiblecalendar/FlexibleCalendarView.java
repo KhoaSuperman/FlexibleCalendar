@@ -684,7 +684,7 @@ public class FlexibleCalendarView extends LinearLayout implements
      */
     public void selectDate(Date date) {
         if (date == null) return;
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Bangkok"));
+        Calendar calendar = MyMonthDisplayHelper.getCalendar();
         calendar.setTime(date);
         selectDate(calendar);
     }
@@ -700,6 +700,25 @@ public class FlexibleCalendarView extends LinearLayout implements
         selectDate(calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
+    }
+
+    public void selectDate(Calendar calendar, boolean performClick) {
+        int selectedDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int selectedMonth = calendar.get(Calendar.MONTH);
+        int selectedYear = calendar.get(Calendar.YEAR);
+        selectDate(selectedYear, selectedMonth, selectedDay);
+
+        if (performClick) {
+            for (int i = 0; i < monthViewPagerAdapter.getCount(); i++) {
+                FlexibleCalendarGridAdapter adapter = monthViewPagerAdapter.getMonthAdapterAtPosition(i);
+                for (CellData cellData : adapter.cellDatas) {
+                    if (cellData.day == selectedDay && cellData.month == selectedMonth && cellData.year == selectedYear) {
+                        onDateClick(getSelectedDateItem(), cellData);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -814,7 +833,6 @@ public class FlexibleCalendarView extends LinearLayout implements
     public interface OnDateClickListener {
         /**
          * Called whenever a date cell is clicked
-         *
          */
         void onDateClick(CellData cellData);
     }
