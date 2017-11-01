@@ -24,13 +24,14 @@ import com.p_v.flexiblecalendarexample.widget.MyCellView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 
 public class CalendarActivityFragment extends Fragment implements FlexibleCalendarView.OnMonthChangeListener, FlexibleCalendarView.OnDateClickListener {
 
     private FlexibleCalendarView calendarView;
     private TextView someTextView;
-    private Calendar calendar = Calendar.getInstance();
+    private Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Bangkok"));
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

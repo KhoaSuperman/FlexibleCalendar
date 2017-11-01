@@ -30,6 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * A Flexible calendar view
@@ -164,7 +165,7 @@ public class FlexibleCalendarView extends LinearLayout implements
     private void setAttributes(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FlexibleCalendarView);
         try {
-            Calendar cal = Calendar.getInstance(FlexibleCalendarHelper.getLocale(context));
+            Calendar cal = MyMonthDisplayHelper.getCalendar();
             displayMonth = a.getInteger(R.styleable.FlexibleCalendarView_startDisplayMonth, cal.get(Calendar.MONTH));
             displayYear = a.getInteger(R.styleable.FlexibleCalendarView_startDisplayYear, cal.get(Calendar.YEAR));
             startDisplayDay = cal.get(Calendar.DAY_OF_MONTH);
@@ -366,7 +367,7 @@ public class FlexibleCalendarView extends LinearLayout implements
         if (disableAutoDateSelection && userSelectedItem == null) return;
 
         if (selectedDateItem != null) {
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = MyMonthDisplayHelper.getCalendar();
             cal.set(selectedDateItem.getYear(), selectedDateItem.getMonth(), selectedDateItem.getDay());
             cal.add(Calendar.DATE, -1);
 
@@ -400,7 +401,7 @@ public class FlexibleCalendarView extends LinearLayout implements
 
         if (selectedDateItem != null) {
 
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = MyMonthDisplayHelper.getCalendar();
             cal.set(selectedDateItem.getYear(), selectedDateItem.getMonth(), selectedDateItem.getDay());
             cal.add(Calendar.DATE, 1);
 
@@ -550,7 +551,7 @@ public class FlexibleCalendarView extends LinearLayout implements
                 .getMonthDifference(displayYear, displayMonth);
 
         //current date
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Bangkok"));
         //update selected date item
         selectedDateItem.setDay(cal.get(Calendar.DAY_OF_MONTH));
         selectedDateItem.setMonth(cal.get(Calendar.MONTH));
@@ -683,7 +684,7 @@ public class FlexibleCalendarView extends LinearLayout implements
      */
     public void selectDate(Date date) {
         if (date == null) return;
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Bangkok"));
         calendar.setTime(date);
         selectDate(calendar);
     }
@@ -923,7 +924,7 @@ public class FlexibleCalendarView extends LinearLayout implements
 
         private SelectedDateItem computeNewSelectedDateItem(int difference) {
 
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = MyMonthDisplayHelper.getCalendar();
             cal.set(displayYear, displayMonth, 1);
             cal.add(Calendar.MONTH, -difference);
 

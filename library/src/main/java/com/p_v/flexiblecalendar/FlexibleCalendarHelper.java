@@ -7,6 +7,7 @@ import java.text.DateFormatSymbols;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * @author p-v
@@ -68,7 +69,7 @@ public class FlexibleCalendarHelper {
      * @return the localized calendar instance
      */
     public static Calendar getLocalizedCalendar(Context context) {
-        return Calendar.getInstance(getLocale(context));
+        return MyMonthDisplayHelper.getCalendar();
     }
 
     /**
@@ -79,9 +80,9 @@ public class FlexibleCalendarHelper {
      * @return number of rows
      */
     public static int getNumOfRowsForTheMonth(int year, int month, int startDayOfTheWeek) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = MyMonthDisplayHelper.getCalendar();
         cal.set(year, month, 1);
-        MonthDisplayHelper displayHelper = new MonthDisplayHelper(year, month, startDayOfTheWeek);
+        MyMonthDisplayHelper displayHelper = new MyMonthDisplayHelper(year, month, startDayOfTheWeek);
         return displayHelper.getRowOf(cal.getActualMaximum(Calendar.DAY_OF_MONTH)) + 1;
     }
 
@@ -93,7 +94,7 @@ public class FlexibleCalendarHelper {
      * @return
      */
     public static int getMonthDifference(int year, int month) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = MyMonthDisplayHelper.getCalendar();
         int currentMonth = cal.get(Calendar.MONTH);
         int currentYear = cal.get(Calendar.YEAR);
 

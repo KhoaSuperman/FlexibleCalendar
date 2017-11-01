@@ -2,7 +2,6 @@ package com.p_v.flexiblecalendar;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.MonthDisplayHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     private int year;
     private int month;
     private Context context;
-    private MonthDisplayHelper monthDisplayHelper;
+    private MyMonthDisplayHelper monthDisplayHelper;
     private Calendar calendar;
     private OnDateCellItemClickListener onDateCellItemClickListener;
     private SelectedDateItem selectedItem;
@@ -55,7 +54,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     public void initialize(int year, int month, int startDayOfTheWeek) {
         this.year = year;
         this.month = month;
-        this.monthDisplayHelper = new MonthDisplayHelper(year, month, startDayOfTheWeek);
+        this.monthDisplayHelper = new MyMonthDisplayHelper(year, month, startDayOfTheWeek);
         this.calendar = FlexibleCalendarHelper.getLocalizedCalendar(context);
 
         //calculate item count
@@ -269,7 +268,7 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
     }
 
     public void setFirstDayOfTheWeek(int firstDayOfTheWeek) {
-        monthDisplayHelper = new MonthDisplayHelper(year, month, firstDayOfTheWeek);
+        monthDisplayHelper = new MyMonthDisplayHelper(year, month, firstDayOfTheWeek);
         this.notifyDataSetChanged();
     }
 
