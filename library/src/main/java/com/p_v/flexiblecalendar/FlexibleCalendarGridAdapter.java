@@ -131,7 +131,8 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
             } else {
                 if (selectedItem != null && selectedItem.getYear() == year
                         && selectedItem.getMonth() == month
-                        && selectedItem.getDay() == day) {
+                        && selectedItem.getDay() == day
+                        && selectedItem.visible) {
                     //selected
                     cellType = BaseCellView.SELECTED;
                 }

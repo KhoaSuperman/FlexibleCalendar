@@ -83,7 +83,7 @@ public class CalendarActivityFragment extends Fragment implements FlexibleCalend
         });
         calendarView.setOnMonthChangeListener(this);
         calendarView.setOnDateClickListener(this);
-        calendarView.setDisableAutoDateSelection(true);
+        calendarView.setDisableAutoDateSelection(false);
         calendarView.selectDate(calendar, true);
 
         fillEvents();

@@ -9,6 +9,7 @@ public class SelectedDateItem {
     private int month;
     private int year;
     private int position;
+    public boolean visible = true;
 
     public SelectedDateItem(int year, int month, int day) {
         this.day = day;

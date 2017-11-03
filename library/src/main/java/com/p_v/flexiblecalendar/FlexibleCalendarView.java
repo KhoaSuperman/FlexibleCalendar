@@ -902,8 +902,9 @@ public class FlexibleCalendarView extends LinearLayout implements
             } else {
                 //compute the new SelectedDateItem based on the difference in position
                 newDateItem = computeNewSelectedDateItem(lastPosition - position);
+                //hot fix the case: disableAutoDateSelection == false, swipe to next month -> hide auto select day = 1
+                newDateItem.visible = false;
             }
-
 
             //the month view pager adater will update here again
             monthViewPagerAdapter.refreshDateAdapters(position % MonthViewPagerAdapter.VIEWS_IN_PAGER, newDateItem, resetAdapters);
