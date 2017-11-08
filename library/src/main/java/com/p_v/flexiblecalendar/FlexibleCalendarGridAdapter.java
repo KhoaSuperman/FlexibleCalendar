@@ -331,7 +331,11 @@ class FlexibleCalendarGridAdapter extends RecyclerView.Adapter<FlexibleCalendarG
             }
 
             if (onDateCellItemClickListener != null) {
-                onDateCellItemClickListener.onDateClick(selectedItem, cellDatas.get(iPosition));
+                //correct month if date is outside the current month
+                CellData cellData = new CellData(iDay, iMonth, iYear, iPosition);
+                cellData.dayEvents = cellDatas.get(iPosition).dayEvents;
+
+                onDateCellItemClickListener.onDateClick(selectedItem, cellData);
             }
         }
     }
